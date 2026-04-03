@@ -22,7 +22,7 @@
 
 ## 설치 방법 (Windows)
 
-> 자세한 내용은 [티스토리 참조](https://hailey-p.tistory.com/21)
+> 자세한 내용은 [티스토리](https://hailey-p.tistory.com/21) 참조
 
 <br><br>
 
