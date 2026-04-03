@@ -13,8 +13,8 @@
 
 | OS | 파일 | 크기 |
 |---|---|---|
-| Windows | [`NexisDB_Setup_v1.exe`](https://drive.google.com/file/d/189quhiayYpXsQI96953UKjYRPeorAdIb/view?usp=drive_link) | 11.98MB |
-| Linux | [`nexis-db-setup-1.0-1.noarch.rpm`](https://drive.google.com/file/d/1FZ7_2wfUvIN4tdKuUIvQYlofYjmfPnha/view?usp=drive_link) | 9.10MB |
+| Windows | [`NexisDB_Setup_v1.exe`](https://drive.google.com/file/d/1ymEhIBR5PnaNiablz7NuNkmPou0O7Nkw/view?usp=drive_link) | 11.98MB |
+| Linux | [`nexis-db-setup-1.0-1.noarch.rpm`](https://drive.google.com/file/d/1m7vPPSII7CQ-GoMT5WW50CQLrxRZWuKM/view?usp=drive_link) | 9.10MB |
 
 <br><br>
 
