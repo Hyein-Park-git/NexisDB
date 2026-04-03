@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.nexis'
+version = '1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.mysql:mysql-connector-j:8.3.0'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.3.2'
+    implementation 'org.postgresql:postgresql:42.7.2'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    exclude '**/*'
+}
+
+jar {
+    archiveFileName = 'nexis-db-setup.jar'
+    manifest {
+        attributes 'Main-Class': 'com.example.nexis.dbsetup.DbSetupMain'
+    }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // ✅ 배포용 리소스 폴더 제외
+    exclude 'deploy.linux/**'
+    exclude 'deploy.windows/**'
+    exclude 'deploy/**'
+}
+
+/* ════════════════════════════════════════════
+   RPM 빌드 준비 (파일 복사)
+════════════════════════════════════════════ */
+task prepareRpm(dependsOn: jar) {
+    doLast {
+        def rpmRoot = "${System.getProperty('user.home')}/rpmbuild"
+        new File("${rpmRoot}/SOURCES").mkdirs()
+        new File("${rpmRoot}/SPECS").mkdirs()
+        new File("${rpmRoot}/BUILD").mkdirs()
+        new File("${rpmRoot}/RPMS").mkdirs()
+        new File("${rpmRoot}/SRPMS").mkdirs()
+
+        def jarSrc  = new File("${projectDir}/build/libs/nexis-db-setup.jar")
+        def specSrc = new File("${projectDir}/src/main/resources/deploy/linux/nexis-db-setup.spec")
+
+        java.nio.file.Files.copy(
+            jarSrc.toPath(),
+            new File("${rpmRoot}/SOURCES/nexis-db-setup.jar").toPath(),
+            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        )
+        java.nio.file.Files.copy(
+            specSrc.toPath(),
+            new File("${rpmRoot}/SPECS/nexis-db-setup.spec").toPath(),
+            java.nio.file.StandardCopyOption.REPLACE_EXISTING
+        )
+        println "✅ 파일 복사 완료 → ${rpmRoot}"
+    }
+}
+
+/* ════════════════════════════════════════════
+   RPM 빌드 실행
+════════════════════════════════════════════ */
+task buildRpm(type: Exec, dependsOn: prepareRpm) {
+    commandLine 'rpmbuild', '-bb',
+        "${System.getProperty('user.home')}/rpmbuild/SPECS/nexis-db-setup.spec"
+}
